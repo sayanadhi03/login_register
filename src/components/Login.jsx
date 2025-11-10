@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
 const Login = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -14,14 +14,32 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const login = {
-      email,
-      password,
-    };
+    // Basic validation
+    if (!email || !password) {
+      alert("Please fill in both email and password!");
+      return;
+    }
 
-    console.log(login);
+    // Get users from localStorage
+    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
 
-    navigate("/dashboard")
+    if (existingUsers.length === 0) {
+      alert("No users found! Please register first.");
+      return;
+    }
+
+    // Check if user exists and password matches
+    const user = existingUsers.find(
+      (user) => user.email === email && user.password === password
+    );
+
+    if (user) {
+      console.log("Login successful:", user);
+      alert(`Login successful! Welcome back, ${user.username}!`);
+      navigate("/dashboard");
+    } else {
+      alert("Invalid email or password!");
+    }
   };
 
   return (

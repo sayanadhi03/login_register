@@ -22,12 +22,46 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Registration Data:", formData);
 
-    // Here you would typically send the data to your backend
-    // For now, we'll just simulate a successful registration
+    // Basic validation
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !formData.number
+    ) {
+      alert("Please fill in all fields!");
+      return;
+    }
 
-    // Show success message (optional)
+    if (formData.password.length < 6) {
+      alert("Password must be at least 6 characters long!");
+      return;
+    }
+
+    // Check if user already exists
+    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+    const userExists = existingUsers.find(
+      (user) => user.email === formData.email
+    );
+
+    if (userExists) {
+      alert("User with this email already exists!");
+      return;
+    }
+
+    // Save new user to localStorage
+    const newUser = {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      phone: formData.number,
+    };
+
+    existingUsers.push(newUser);
+    localStorage.setItem("users", JSON.stringify(existingUsers));
+
+    console.log("User registered:", newUser);
     alert("Account created successfully! Redirecting to dashboard...");
 
     // Redirect to dashboard
